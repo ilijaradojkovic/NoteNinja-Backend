@@ -1,6 +1,8 @@
 package com.noteninja.noteninjabackend.controler;
 
+import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
+import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
 import com.noteninja.noteninjabackend.model.response.Response;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
@@ -54,6 +56,17 @@ public class NoteController {
                 .timestamp(LocalDateTime.now())
                 .build();
 
+    }
+
+    @PutMapping("/{id}")
+    public Response updateNote(@RequestBody UpdateNoteRequest updateNoteRequest, @PathVariable("id") UUID id) throws NoteNotFoundException {
+        noteService.updateNote(updateNoteRequest,id);
+        return  Response.builder()
+                .data(Map.of("note",updateNoteRequest))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
 }
