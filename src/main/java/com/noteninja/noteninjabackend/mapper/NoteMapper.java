@@ -3,6 +3,7 @@ package com.noteninja.noteninjabackend.mapper;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
+import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -29,4 +30,6 @@ public interface NoteMapper {
 
 
     NoteCardResponse fromNoteToNoteCardResponse(Note note);
+
+    NoteDetails fromNoteToNoteDetails(Note note);
 }

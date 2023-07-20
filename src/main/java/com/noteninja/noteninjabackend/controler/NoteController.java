@@ -4,6 +4,7 @@ import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
+import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.Response;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import com.noteninja.noteninjabackend.service.NoteService;
@@ -63,6 +64,17 @@ public class NoteController {
         noteService.updateNote(updateNoteRequest,id);
         return  Response.builder()
                 .data(Map.of("note",updateNoteRequest))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public Response noteDetails(@PathVariable("id") UUID id) throws NoteNotFoundException {
+        NoteDetails noteDetails = noteService.getNoteDetails(id);
+        return  Response.builder()
+                .data(Map.of("note",noteDetails))
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())

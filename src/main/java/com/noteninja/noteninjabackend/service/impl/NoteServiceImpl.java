@@ -7,12 +7,15 @@ import com.noteninja.noteninjabackend.model.entity.QNote;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
+import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import com.noteninja.noteninjabackend.repository.NoteRepository;
 import com.noteninja.noteninjabackend.service.NoteService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +61,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @CachePut(cacheNames = "updateNote",key = "${id}")
     public void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException {
         Note note = noteRepository.findById(id).orElseThrow(()-> new NoteNotFoundException(id));
         if(updateNoteRequest.noteType()!=null)
@@ -68,5 +72,14 @@ public class NoteServiceImpl implements NoteService {
             note.setTitle(updateNoteRequest.title());
 
         noteRepository.save(note);
+    }
+
+    @Override
+    @Cacheable(key = "${id}",cacheNames = "getNoteDetails")
+    public NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException {
+
+        Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+        return noteMapper.fromNoteToNoteDetails(note);
+
     }
 }

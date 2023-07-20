@@ -4,6 +4,7 @@ import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
+import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import org.springframework.stereotype.Component;
 
@@ -19,4 +20,5 @@ public interface NoteService {
     void deleteNote(UUID id);
 
     void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException;
+    NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException ;
 }
