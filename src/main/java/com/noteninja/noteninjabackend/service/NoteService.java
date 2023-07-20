@@ -1,12 +1,11 @@
 package com.noteninja.noteninjabackend.service;
 
-import com.noteninja.noteninjabackend.repository.NoteRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
+import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
+import org.springframework.stereotype.Component;
 
-@Service
-@RequiredArgsConstructor
-public class NoteService {
-    private final NoteRepository noteRepository;
+@Component
+public interface NoteService {
 
+    SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest);
 }
