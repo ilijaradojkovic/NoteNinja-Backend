@@ -49,7 +49,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException {
-        Note note = noteRepository.findById(id).orElseThrow(NoteNotFoundException::new);
+        Note note = noteRepository.findById(id).orElseThrow(()-> new NoteNotFoundException(id));
         if(updateNoteRequest.noteType()!=null)
             note.setNoteType(updateNoteRequest.noteType());
         if(updateNoteRequest.description()!=null)
