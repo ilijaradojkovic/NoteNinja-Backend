@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +41,19 @@ public class NoteController {
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
                 .build();
+    }
+
+    @DeleteMapping
+    public Response deleteNote(@RequestParam("id") UUID id){
+
+        noteService.deleteNote(id);
+        return  Response.builder()
+                .data(Map.of("note_deleted",id))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+
     }
 
 }

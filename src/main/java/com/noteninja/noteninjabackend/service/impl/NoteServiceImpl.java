@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -36,5 +37,11 @@ public class NoteServiceImpl implements NoteService {
         List<Note> notesFound = noteRepository.findAll(PageRequest.of(page, page_size)).toList();
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
+    }
+
+    @Override
+    public void deleteNote(UUID id) {
+        noteRepository.deleteById(id);
+
     }
 }
