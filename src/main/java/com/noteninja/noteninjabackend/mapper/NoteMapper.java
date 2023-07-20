@@ -2,12 +2,14 @@ package com.noteninja.noteninjabackend.mapper;
 
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
+import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
 import java.util.UUID;
 
 @Mapper(
@@ -22,4 +24,10 @@ public interface NoteMapper {
     Note fromSaveNoteRequestToNote(SaveNoteRequest saveNoteRequest);
 
     SavedNoteResponse fromNoteToSavedNoteResponse(Note note);
+
+    Iterable<NoteCardResponse> fromListNotesTo_ListNoteCardResponse(List<Note> notesFound);
+
+
+
+    NoteCardResponse fromNoteToNoteCardResponse(Note note);
 }
