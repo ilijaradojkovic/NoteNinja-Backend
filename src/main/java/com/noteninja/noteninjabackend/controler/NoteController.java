@@ -34,8 +34,8 @@ public class NoteController {
                 .build();
     }
     @GetMapping
-    public Response getNotes(@RequestParam("page") int page){
-        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page);
+    public Response getNotes(@RequestParam("page") int page,@RequestParam(value = "search",required = false) String search){
+        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search);
 
         return  Response.builder()
                 .data(Map.of("notes",noteCardResponses))

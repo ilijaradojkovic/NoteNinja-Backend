@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-import java.util.List;
 import java.util.UUID;
 
 @Mapper(
@@ -25,7 +24,7 @@ public interface NoteMapper {
 
     SavedNoteResponse fromNoteToSavedNoteResponse(Note note);
 
-    Iterable<NoteCardResponse> fromListNotesTo_ListNoteCardResponse(List<Note> notesFound);
+    Iterable<NoteCardResponse> fromListNotesTo_ListNoteCardResponse(Iterable<Note> notesFound);
 
 
 

@@ -14,7 +14,7 @@ public interface NoteService {
 
     SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest);
 
-    Iterable<NoteCardResponse> getNotes(int page);
+    Iterable<NoteCardResponse> getNotes(int page,String search);
 
     void deleteNote(UUID id);
 

@@ -3,17 +3,20 @@ package com.noteninja.noteninjabackend.service.impl;
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.mapper.NoteMapper;
 import com.noteninja.noteninjabackend.model.entity.Note;
+import com.noteninja.noteninjabackend.model.entity.QNote;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import com.noteninja.noteninjabackend.repository.NoteRepository;
 import com.noteninja.noteninjabackend.service.NoteService;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,8 +38,15 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Iterable<NoteCardResponse> getNotes(int page) {
-        List<Note> notesFound = noteRepository.findAll(PageRequest.of(page, page_size)).toList();
+    public Iterable<NoteCardResponse> getNotes(int page,String search) {
+        Iterable<Note> notesFound;
+        if(search==null || search.trim().isEmpty()) {
+            notesFound = noteRepository.findAll(PageRequest.of(page, page_size)).toList();
+        }else{
+            QNote qNote=QNote.note;
+            BooleanExpression contains = qNote.title.contains(search);
+            notesFound = noteRepository.findAll(contains);
+        }
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
     }

@@ -15,7 +15,7 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity(name = "note")
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
