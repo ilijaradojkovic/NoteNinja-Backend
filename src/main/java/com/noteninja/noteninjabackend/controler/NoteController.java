@@ -1,6 +1,8 @@
 package com.noteninja.noteninjabackend.controler;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
+import com.noteninja.noteninjabackend.model.NoteType;
+import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -35,8 +37,14 @@ public class NoteController {
                 .build();
     }
     @GetMapping
-    public Response getNotes(@RequestParam("page") int page,@RequestParam(value = "search",required = false) String search){
-        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search);
+    public Response getNotes(
+            @RequestParam("page") int page,
+            @RequestParam(value = "search",required = false) String search,
+            @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType
+
+            ){
+        System.out.println(noteType);
+        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType));
 
         return  Response.builder()
                 .data(Map.of("notes",noteCardResponses))

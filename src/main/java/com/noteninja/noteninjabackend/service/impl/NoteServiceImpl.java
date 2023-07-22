@@ -2,6 +2,7 @@ package com.noteninja.noteninjabackend.service.impl;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.mapper.NoteMapper;
+import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.entity.QNote;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
@@ -39,15 +40,18 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Iterable<NoteCardResponse> getNotes(int page,String search) {
+    public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType) {
         Iterable<Note> notesFound;
         if(search==null || search.trim().isEmpty()) {
             notesFound = noteRepository.findAll(PageRequest.of(page, page_size)).toList();
         }else{
             QNote qNote=QNote.note;
-            BooleanExpression contains = qNote.title.contains(search);
+            BooleanExpression contains =
+                    qNote.title.contains(search)
+                            .and(QNote.note.noteType.eq(noteType));
             notesFound = noteRepository.findAll(contains);
         }
+
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
     }

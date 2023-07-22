@@ -1,6 +1,7 @@
 package com.noteninja.noteninjabackend.service;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
+import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -15,7 +16,7 @@ public interface NoteService {
 
     SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest);
 
-    Iterable<NoteCardResponse> getNotes(int page,String search);
+    Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType);
 
     void deleteNote(UUID id);
 
