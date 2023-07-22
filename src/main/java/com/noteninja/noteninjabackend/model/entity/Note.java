@@ -1,10 +1,7 @@
 package com.noteninja.noteninjabackend.model.entity;
 
 import com.noteninja.noteninjabackend.model.NoteType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +26,7 @@ public class Note {
 
     private String title;
     private String description;
+    @Enumerated(EnumType.STRING)
     private NoteType noteType;
     private LocalDateTime createdAt;
     private String password;
