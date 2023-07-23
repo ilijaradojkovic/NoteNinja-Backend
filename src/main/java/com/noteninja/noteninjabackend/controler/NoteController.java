@@ -43,7 +43,6 @@ public class NoteController {
             @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType
 
             ){
-        System.out.println(noteType);
         Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType));
 
         return  Response.builder()

@@ -12,6 +12,7 @@ import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import com.noteninja.noteninjabackend.repository.NoteRepository;
 import com.noteninja.noteninjabackend.service.NoteService;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,17 +42,19 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType) {
+        System.out.println(noteType);
         Iterable<Note> notesFound;
-        if(search==null || search.trim().isEmpty()) {
-            notesFound = noteRepository.findAll(PageRequest.of(page, page_size)).toList();
-        }else{
-            QNote qNote=QNote.note;
-            BooleanExpression contains =
-                    qNote.title.contains(search)
-                            .and(QNote.note.noteType.eq(noteType));
-            notesFound = noteRepository.findAll(contains);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QNote qNote=QNote.note;
+        if(search!=null){
+            BooleanExpression contains = qNote.title.contains(search);
+            booleanBuilder.and(contains);
         }
-
+        if(noteType!=NoteType.ALL){
+            BooleanExpression eq = qNote.noteType.eq(noteType);
+            booleanBuilder.and(eq);
+        }
+        notesFound=noteRepository.findAll(booleanBuilder);
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
     }
