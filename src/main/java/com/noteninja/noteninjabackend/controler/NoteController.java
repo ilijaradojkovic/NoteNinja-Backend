@@ -53,8 +53,8 @@ public class NoteController {
                 .build();
     }
 
-    @DeleteMapping
-    public Response deleteNote(@RequestParam("id") UUID id){
+    @DeleteMapping("/{id}")
+    public Response deleteNote(@PathVariable("id") UUID id){
 
         noteService.deleteNote(id);
         return  Response.builder()

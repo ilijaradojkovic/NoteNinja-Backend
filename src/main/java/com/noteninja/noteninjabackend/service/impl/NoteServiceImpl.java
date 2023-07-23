@@ -15,6 +15,7 @@ import com.noteninja.noteninjabackend.service.NoteService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
     private final NoteMapper noteMapper;
@@ -35,6 +37,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest) {
+        log.info("Saving note "+ saveNoteRequest);
         Note note = noteMapper.fromSaveNoteRequestToNote(saveNoteRequest);
         noteRepository.save(note);
         return noteMapper.fromNoteToSavedNoteResponse(note);
@@ -42,7 +45,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType) {
-        System.out.println(noteType);
+        log.info("Fetching notes for page:"+ page+" for search:"+ search + " for note_type:"+noteType);
         Iterable<Note> notesFound;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         QNote qNote=QNote.note;
@@ -61,6 +64,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteNote(UUID id) {
+        log.info("Deleting note "+ id);
         noteRepository.deleteById(id);
 
     }
@@ -68,6 +72,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @CachePut(cacheNames = "updateNote",key = "${id}")
     public void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException {
+        log.info("Updating note "+ id +"values: "+updateNoteRequest);
         Note note = noteRepository.findById(id).orElseThrow(()-> new NoteNotFoundException(id));
         if(updateNoteRequest.noteType()!=null)
             note.setNoteType(updateNoteRequest.noteType());
@@ -82,7 +87,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Cacheable(key = "${id}",cacheNames = "getNoteDetails")
     public NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException {
-
+        log.info("Fetching note details "+ id);
         Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
         return noteMapper.fromNoteToNoteDetails(note);
 
