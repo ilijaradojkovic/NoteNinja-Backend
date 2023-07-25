@@ -16,7 +16,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +31,7 @@ public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
     private final NoteMapper noteMapper;
 
-    @Value("${page_size}")
-    private int page_size;
+
 
     @Override
     public SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest) {
@@ -44,7 +42,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType) {
+    public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType, int pageSize) {
         log.info("Fetching notes for page:"+ page+" for search:"+ search + " for note_type:"+noteType);
         Iterable<Note> notesFound;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -57,7 +55,7 @@ public class NoteServiceImpl implements NoteService {
             BooleanExpression eq = qNote.noteType.eq(noteType);
             booleanBuilder.and(eq);
         }
-        notesFound=noteRepository.findAll(booleanBuilder);
+        notesFound=noteRepository.findAll(booleanBuilder, PageRequest.of(page,pageSize));
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
     }
@@ -91,5 +89,22 @@ public class NoteServiceImpl implements NoteService {
         Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
         return noteMapper.fromNoteToNoteDetails(note);
 
+    }
+
+    //kesiraj ovopo user idu
+    @Override
+    public Long getNotesCount(String search, NoteType noteType) {
+        log.info("Fetch notes count "+ search +" "+ noteType);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QNote qNote=QNote.note;
+        if(search!=null){
+            BooleanExpression contains = qNote.title.contains(search);
+            booleanBuilder.and(contains);
+        }
+        if(noteType!=NoteType.ALL){
+            BooleanExpression eq = qNote.noteType.eq(noteType);
+            booleanBuilder.and(eq);
+        }
+        return noteRepository.count(booleanBuilder);
     }
 }

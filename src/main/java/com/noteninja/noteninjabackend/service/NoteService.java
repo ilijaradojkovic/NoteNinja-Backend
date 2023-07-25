@@ -16,10 +16,12 @@ public interface NoteService {
 
     SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest);
 
-    Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType);
+    Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType, int pageSize);
 
     void deleteNote(UUID id);
 
     void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException;
     NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException ;
+
+    Long getNotesCount(String search, NoteType noteType);
 }

@@ -39,11 +39,12 @@ public class NoteController {
     @GetMapping
     public Response getNotes(
             @RequestParam("page") int page,
+            @RequestParam(value = "page_size",defaultValue = "10") int pageSize,
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType
 
             ){
-        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType));
+        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType),pageSize);
 
         return  Response.builder()
                 .data(Map.of("notes",noteCardResponses))
@@ -88,4 +89,17 @@ public class NoteController {
                 .build();
     }
 
+
+    @GetMapping("/total")
+    public Response getTotalNumberOfNotes(  @RequestParam(value = "search",required = false) String search,
+                                            @RequestParam(value = "note_type",required = false,defaultValue ="ALL") String noteType){
+        //ovde bi trebal oza usera
+        Long number=noteService.getNotesCount(search,NoteType.valueOf(noteType));
+        return Response.builder()
+                .data(Map.of("total",number))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }
