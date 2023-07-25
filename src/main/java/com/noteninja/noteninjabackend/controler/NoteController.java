@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notes")
+@RequestMapping("/api/v1/notes")
 public class NoteController {
 
     private final NoteService noteService;

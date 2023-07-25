@@ -11,7 +11,6 @@ import com.noteninja.noteninjabackend.model.entity.User;
 import com.noteninja.noteninjabackend.model.request.LoginRequest;
 import com.noteninja.noteninjabackend.model.request.SignupRequest;
 import com.noteninja.noteninjabackend.model.request.TokenRefreshRequest;
-import com.noteninja.noteninjabackend.model.response.JwtResponse;
 import com.noteninja.noteninjabackend.model.response.Response;
 import com.noteninja.noteninjabackend.model.response.TokenRefreshResponse;
 import com.noteninja.noteninjabackend.repository.RoleRepository;
@@ -40,7 +39,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
 
@@ -63,7 +62,7 @@ public class AuthController {
     private RoleRepository roleRepository;
     @PostMapping("/signup")
     public Response registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.username())) {
+        if (userRepository.existsByEmail(signUpRequest.username())) {
             throw new UsernameAlreadyTakenException("Username is already taken");
         }
 
@@ -120,7 +119,7 @@ public class AuthController {
     public Response authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

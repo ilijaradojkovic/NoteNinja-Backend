@@ -19,7 +19,7 @@ import java.util.Set;
 @Builder
 @Table(	name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email"),
                 @UniqueConstraint(columnNames = "email")
         })
 public class User {
