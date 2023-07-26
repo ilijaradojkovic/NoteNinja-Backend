@@ -1,6 +1,7 @@
 package com.noteninja.noteninjabackend.mapper;
 
 import com.noteninja.noteninjabackend.model.entity.Note;
+import com.noteninja.noteninjabackend.model.entity.User;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
 import com.noteninja.noteninjabackend.model.response.NoteDetails;
@@ -21,7 +22,10 @@ public interface NoteMapper {
 
     @Mapping(target = "id",expression = "java(UUID.randomUUID())")
     @Mapping(target = "createdAt",expression = "java(LocalDateTime.now())")
-    Note fromSaveNoteRequestToNote(SaveNoteRequest saveNoteRequest);
+    @Mapping(target = "user",source = "user")
+    @Mapping(target = "password",source = "saveNoteRequest.password")
+    @Mapping(target = "isFavorite",expression = "java(false)")
+    Note fromSaveNoteRequestToNote(SaveNoteRequest saveNoteRequest, User user);
 
     SavedNoteResponse fromNoteToSavedNoteResponse(Note note);
 

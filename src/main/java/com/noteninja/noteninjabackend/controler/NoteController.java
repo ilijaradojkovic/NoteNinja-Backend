@@ -9,10 +9,12 @@ import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
 import com.noteninja.noteninjabackend.model.response.NoteDetails;
 import com.noteninja.noteninjabackend.model.response.Response;
 import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
+import com.noteninja.noteninjabackend.security.UserDetailsImpl;
 import com.noteninja.noteninjabackend.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -28,8 +30,9 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping
-    public Response saveNote(@RequestBody  @Valid  SaveNoteRequest saveNoteRequest){
-        SavedNoteResponse savedNoteResponse = noteService.saveNote(saveNoteRequest);
+    public Response saveNote(@RequestBody  @Valid  SaveNoteRequest saveNoteRequest,@AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        SavedNoteResponse savedNoteResponse = noteService.saveNote(saveNoteRequest,userDetails.getId());
         return Response.builder()
                 .data(Map.of("note",savedNoteResponse))
                 .status(HttpStatus.CREATED)
@@ -42,10 +45,11 @@ public class NoteController {
             @RequestParam("page") int page,
             @RequestParam(value = "page_size",defaultValue = "10") int pageSize,
             @RequestParam(value = "search",required = false) String search,
-            @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType
+            @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
 
             ){
-        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType),pageSize);
+        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType),pageSize,userDetails.getId());
 
         return  Response.builder()
                 .data(Map.of("notes",noteCardResponses))
@@ -93,11 +97,28 @@ public class NoteController {
 
     @GetMapping("/total")
     public Response getTotalNumberOfNotes(  @RequestParam(value = "search",required = false) String search,
-                                            @RequestParam(value = "note_type",required = false,defaultValue ="ALL") String noteType){
+                                            @RequestParam(value = "note_type",required = false,defaultValue ="ALL") String noteType,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails
+                                            ){
         //ovde bi trebal oza usera
-        Long number=noteService.getNotesCount(search,NoteType.valueOf(noteType));
+        Long number=noteService.getNotesCount(search,NoteType.valueOf(noteType),userDetails.getId());
         return Response.builder()
                 .data(Map.of("total",number))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @PatchMapping("/favorites/{id}")
+    public Response addToFavorites(
+            @PathVariable("id") UUID noteId,
+            @RequestParam("favorite") boolean favorite,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws NoteNotFoundException {
+        noteService.toggleToFavorites(noteId,userDetails.getId(),favorite);
+        return Response.builder()
+                .data(Map.of("note_id",noteId))
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())

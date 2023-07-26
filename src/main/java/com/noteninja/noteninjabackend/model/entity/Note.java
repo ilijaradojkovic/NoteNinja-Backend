@@ -31,6 +31,10 @@ public class Note {
     private LocalDateTime createdAt;
     private String password;
     private Boolean isLocked;
+    private Boolean isFavorite;
+
+    @ManyToOne
+    private User user;
 
 
 }
