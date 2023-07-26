@@ -19,9 +19,10 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/notes")
+@RequestMapping("/notes")
 public class NoteController {
 
     private final NoteService noteService;

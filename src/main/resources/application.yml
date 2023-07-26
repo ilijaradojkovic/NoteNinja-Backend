@@ -1,4 +1,7 @@
 page_size: 10
+server:
+  servlet:
+    context-path: /api/v1
 app:
   jwtSecret: ======================BezKoder=Spring===========================
 
