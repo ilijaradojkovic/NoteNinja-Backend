@@ -12,7 +12,8 @@ public record NoteDetails(
          String description,
          NoteType noteType,
          LocalDateTime createdAt,
-         Boolean isLocked
+         Boolean isLocked,
+         Boolean isFavorite
 
 
 

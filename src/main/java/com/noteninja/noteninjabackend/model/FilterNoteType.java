@@ -1,7 +1,9 @@
 package com.noteninja.noteninjabackend.model;
 
-public enum NoteType {
+public enum FilterNoteType {
+    ALL,
     BUSINESS,
     SOCIAL,
-    IMPORTANT
+    IMPORTANT,
+    FAVORITES
 }

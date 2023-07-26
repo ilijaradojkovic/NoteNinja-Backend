@@ -3,6 +3,7 @@ package com.noteninja.noteninjabackend.service.impl;
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.exception.UserNotFoundException;
 import com.noteninja.noteninjabackend.mapper.NoteMapper;
+import com.noteninja.noteninjabackend.model.FilterNoteType;
 import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.entity.QNote;
@@ -49,7 +50,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Iterable<NoteCardResponse> getNotes(int page, String search, NoteType noteType, int pageSize,Long id) {
+    public Iterable<NoteCardResponse> getNotes(int page, String search, FilterNoteType noteType, int pageSize,Long id) {
         log.info("Fetching notes for page:"+ page+" for search:"+ search + " for note_type:"+noteType + " for user "+ id);
         Iterable<Note> notesFound;
         //tip: you should not extract whole user with his password here
@@ -60,8 +61,12 @@ public class NoteServiceImpl implements NoteService {
             BooleanExpression contains = qNote.title.contains(search);
             booleanBuilder.and(contains);
         }
-        if(noteType!=NoteType.ALL){
-            BooleanExpression eq = qNote.noteType.eq(noteType);
+        if(noteType!=FilterNoteType.ALL && noteType!=FilterNoteType.FAVORITES){
+            BooleanExpression eq = qNote.noteType.eq(NoteType.valueOf(noteType.name()));
+            booleanBuilder.and(eq);
+        }
+        if(noteType==FilterNoteType.FAVORITES){
+            BooleanExpression eq=qNote.isFavorite.eq(true);
             booleanBuilder.and(eq);
         }
         booleanBuilder.and(qNote.user.id.eq(id));
@@ -104,7 +109,7 @@ public class NoteServiceImpl implements NoteService {
 
     //kesiraj ovopo user idu
     @Override
-    public Long getNotesCount(String search, NoteType noteType, Long id) {
+    public Long getNotesCount(String search, FilterNoteType noteType, Long id) {
         log.info("Fetch notes count "+ search +" "+ noteType);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         QNote qNote=QNote.note;
@@ -112,8 +117,12 @@ public class NoteServiceImpl implements NoteService {
             BooleanExpression contains = qNote.title.contains(search);
             booleanBuilder.and(contains);
         }
-        if(noteType!=NoteType.ALL){
-            BooleanExpression eq = qNote.noteType.eq(noteType);
+        if(noteType!= FilterNoteType.ALL && noteType!=FilterNoteType.FAVORITES){
+            BooleanExpression eq = qNote.noteType.eq(NoteType.valueOf(noteType.name()));
+            booleanBuilder.and(eq);
+        }
+        if(noteType==FilterNoteType.FAVORITES){
+            BooleanExpression eq=qNote.isFavorite.eq(true);
             booleanBuilder.and(eq);
         }
         booleanBuilder.and(qNote.user.id.eq(id));

@@ -1,6 +1,7 @@
 package com.noteninja.noteninjabackend.controler;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
+import com.noteninja.noteninjabackend.model.FilterNoteType;
 import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
@@ -49,7 +50,7 @@ public class NoteController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
 
             ){
-        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, NoteType.valueOf(noteType),pageSize,userDetails.getId());
+        Iterable<NoteCardResponse> noteCardResponses=noteService.getNotes(page,search, FilterNoteType.valueOf(noteType),pageSize,userDetails.getId());
 
         return  Response.builder()
                 .data(Map.of("notes",noteCardResponses))
@@ -101,7 +102,7 @@ public class NoteController {
                                             @AuthenticationPrincipal UserDetailsImpl userDetails
                                             ){
         //ovde bi trebal oza usera
-        Long number=noteService.getNotesCount(search,NoteType.valueOf(noteType),userDetails.getId());
+        Long number=noteService.getNotesCount(search,FilterNoteType.valueOf(noteType),userDetails.getId());
         return Response.builder()
                 .data(Map.of("total",number))
                 .status(HttpStatus.OK)

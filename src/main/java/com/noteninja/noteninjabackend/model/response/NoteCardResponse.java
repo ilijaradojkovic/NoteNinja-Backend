@@ -11,6 +11,8 @@ public record NoteCardResponse(
          String title,
          String description,
          NoteType noteType,
-         LocalDateTime createdAt
+         LocalDateTime createdAt,
+          Boolean isFavorite
+
 ){
 }
