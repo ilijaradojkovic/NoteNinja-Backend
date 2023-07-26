@@ -1,6 +1,7 @@
 package com.noteninja.noteninjabackend.controler;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
+import com.noteninja.noteninjabackend.exception.UserNotFoundException;
 import com.noteninja.noteninjabackend.model.FilterNoteType;
 import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;

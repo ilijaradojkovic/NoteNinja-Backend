@@ -60,7 +60,7 @@ public class AuthController {
     private RoleRepository roleRepository;
     @PostMapping("/signup")
     public Response registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.username())) {
+        if (userRepository.existsByUsername(signUpRequest.username())) {
             throw new UsernameAlreadyTakenException("Username is already taken");
         }
 
