@@ -11,7 +11,7 @@ app:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/noteninja
-    password: root
+    password: wowlg147
     username: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
