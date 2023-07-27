@@ -1,10 +1,8 @@
 package com.noteninja.noteninjabackend.controler;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
-import com.noteninja.noteninjabackend.exception.UserNotFoundException;
 import com.noteninja.noteninjabackend.model.FilterNoteType;
-import com.noteninja.noteninjabackend.model.NoteType;
-import com.noteninja.noteninjabackend.model.entity.Note;
+import com.noteninja.noteninjabackend.model.request.PasswordValidation;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -45,7 +43,7 @@ public class NoteController {
     @GetMapping
     public Response getNotes(
             @RequestParam("page") int page,
-            @RequestParam(value = "page_size",defaultValue = "10") int pageSize,
+            @RequestParam(value = "page_size",defaultValue = "9") int pageSize,
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "note_type",required = false,defaultValue ="ALL")String noteType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -86,7 +84,10 @@ public class NoteController {
     }
 
     @GetMapping("/{id}")
-    public Response noteDetails(@PathVariable("id") UUID id) throws NoteNotFoundException {
+    public Response noteDetails(@PathVariable("id") UUID id
+//            ,@RequestBody() PasswordValidation notePassword
+    )
+            throws Exception {
         NoteDetails noteDetails = noteService.getNoteDetails(id);
         return  Response.builder()
                 .data(Map.of("note",noteDetails))

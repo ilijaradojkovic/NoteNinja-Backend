@@ -2,12 +2,14 @@ package com.noteninja.noteninjabackend.service.impl;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.exception.UserNotFoundException;
+import com.noteninja.noteninjabackend.exception.WrontPasswordForNoteException;
 import com.noteninja.noteninjabackend.mapper.NoteMapper;
 import com.noteninja.noteninjabackend.model.FilterNoteType;
 import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.entity.QNote;
 import com.noteninja.noteninjabackend.model.entity.User;
+import com.noteninja.noteninjabackend.model.request.PasswordValidation;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -16,6 +18,7 @@ import com.noteninja.noteninjabackend.model.response.SavedNoteResponse;
 import com.noteninja.noteninjabackend.repository.NoteRepository;
 import com.noteninja.noteninjabackend.repository.UserRepository;
 import com.noteninja.noteninjabackend.service.NoteService;
+import com.noteninja.noteninjabackend.util.KeysUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -36,6 +40,7 @@ public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
     private final NoteMapper noteMapper;
+    private final KeysUtil keysUtil;
 
 
 
@@ -100,12 +105,22 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Cacheable(key = "${id}",cacheNames = "getNoteDetails")
-    public NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException {
+    public NoteDetails getNoteDetails(UUID id) throws Exception {
         log.info("Fetching note details "+ id);
         Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+//        if(notePassword!=null && note.getIsLocked()){
+//            String decodedPasswor = keysUtil.decode(notePassword.password());
+//            if( note.getPassword().equals(decodedPasswor)){
+//                return noteMapper.fromNoteToNoteDetails(note);
+//            }else{
+//                throw new WrontPasswordForNoteException("Password is not correct for note "+ id);
+//            }
+//
+//        }
         return noteMapper.fromNoteToNoteDetails(note);
 
     }
+
 
     //kesiraj ovopo user idu
     @Override

@@ -1,9 +1,6 @@
 package com.noteninja.noteninjabackend.controler;
 
-import com.noteninja.noteninjabackend.exception.EmailAlreadyTaken;
-import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
-import com.noteninja.noteninjabackend.exception.TokenRefreshException;
-import com.noteninja.noteninjabackend.exception.UsernameAlreadyTakenException;
+import com.noteninja.noteninjabackend.exception.*;
 import com.noteninja.noteninjabackend.model.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +30,7 @@ public class ExceptionController {
         );
     }
 
-    @ExceptionHandler({EmailAlreadyTaken.class, UsernameAlreadyTakenException.class})
+    @ExceptionHandler({EmailAlreadyTaken.class, UsernameAlreadyTakenException.class,WrontPasswordForNoteException.class})
     public ResponseEntity<Response> handle(Exception exception){
         return ResponseEntity.badRequest().body(
                 Response.builder()
@@ -45,6 +42,7 @@ public class ExceptionController {
                         .build()
         );
     }
+
     @ExceptionHandler(NoteNotFoundException.class)
    public ResponseEntity<Response> notFoundNote(NoteNotFoundException exception){
         return  ResponseEntity.badRequest().body(Response.builder()

@@ -2,7 +2,7 @@ package com.noteninja.noteninjabackend.service;
 
 import com.noteninja.noteninjabackend.exception.NoteNotFoundException;
 import com.noteninja.noteninjabackend.model.FilterNoteType;
-import com.noteninja.noteninjabackend.model.NoteType;
+import com.noteninja.noteninjabackend.model.request.PasswordValidation;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -22,7 +22,7 @@ public interface NoteService {
     void deleteNote(UUID id);
 
     void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException;
-    NoteDetails getNoteDetails(UUID id) throws NoteNotFoundException ;
+    NoteDetails getNoteDetails(UUID id) throws Exception;
 
     Long getNotesCount(String search, FilterNoteType noteType, Long id);
 
