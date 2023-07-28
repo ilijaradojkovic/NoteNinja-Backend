@@ -45,6 +45,7 @@ public class SecurityConfiguration {
     public PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
     @Bean

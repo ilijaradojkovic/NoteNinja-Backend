@@ -83,12 +83,12 @@ public class NoteController {
                 .build();
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     public Response noteDetails(@PathVariable("id") UUID id
-//            ,@RequestBody() PasswordValidation notePassword
+            ,@RequestBody() PasswordValidation notePassword
     )
             throws Exception {
-        NoteDetails noteDetails = noteService.getNoteDetails(id);
+        NoteDetails noteDetails = noteService.getNoteDetails(id,notePassword.password());
         return  Response.builder()
                 .data(Map.of("note",noteDetails))
                 .status(HttpStatus.OK)

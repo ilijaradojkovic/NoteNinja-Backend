@@ -8,6 +8,8 @@ public record UpdateNoteRequest(
         @NotEmpty
         String title,
         String description,
-        NoteType noteType
+        NoteType noteType,
+        Boolean isLocked,
+        String password
 ){
 }

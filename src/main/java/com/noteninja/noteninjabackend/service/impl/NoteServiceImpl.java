@@ -9,7 +9,6 @@ import com.noteninja.noteninjabackend.model.NoteType;
 import com.noteninja.noteninjabackend.model.entity.Note;
 import com.noteninja.noteninjabackend.model.entity.QNote;
 import com.noteninja.noteninjabackend.model.entity.User;
-import com.noteninja.noteninjabackend.model.request.PasswordValidation;
 import com.noteninja.noteninjabackend.model.request.SaveNoteRequest;
 import com.noteninja.noteninjabackend.model.request.UpdateNoteRequest;
 import com.noteninja.noteninjabackend.model.response.NoteCardResponse;
@@ -26,10 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -41,7 +39,7 @@ public class NoteServiceImpl implements NoteService {
     private final UserRepository userRepository;
     private final NoteMapper noteMapper;
     private final KeysUtil keysUtil;
-
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -83,9 +81,8 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteNote(UUID id) {
-        log.info("Deleting note "+ id);
+//        log.info("Deleting note "+ id);
         noteRepository.deleteById(id);
-
     }
 
     @Override
@@ -100,23 +97,30 @@ public class NoteServiceImpl implements NoteService {
         if(updateNoteRequest.title()!=null)
             note.setTitle(updateNoteRequest.title());
 
+        if(updateNoteRequest.isLocked()!=null ){
+            note.setIsLocked(updateNoteRequest.isLocked());
+
+            note.setPassword(updateNoteRequest.password());
+        }
+
         noteRepository.save(note);
     }
 
     @Override
     @Cacheable(key = "${id}",cacheNames = "getNoteDetails")
-    public NoteDetails getNoteDetails(UUID id) throws Exception {
+    public NoteDetails getNoteDetails(UUID id, String notePassword) throws Exception {
         log.info("Fetching note details "+ id);
         Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
-//        if(notePassword!=null && note.getIsLocked()){
+        if(notePassword!=null && note.getIsLocked()){
 //            String decodedPasswor = keysUtil.decode(notePassword.password());
-//            if( note.getPassword().equals(decodedPasswor)){
-//                return noteMapper.fromNoteToNoteDetails(note);
-//            }else{
-//                throw new WrontPasswordForNoteException("Password is not correct for note "+ id);
-//            }
-//
-//        }
+
+            if(note.getPassword().equals(notePassword)){
+                return noteMapper.fromNoteToNoteDetails(note);
+            }else{
+                throw new WrontPasswordForNoteException("Password is not correct for note "+ id);
+            }
+
+        }
         return noteMapper.fromNoteToNoteDetails(note);
 
     }
