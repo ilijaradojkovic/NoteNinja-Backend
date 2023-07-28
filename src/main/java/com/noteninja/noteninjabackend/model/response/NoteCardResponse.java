@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record NoteCardResponse(
-         UUID id,
+        UUID id,
 
-         String title,
-         String description,
-         NoteType noteType,
-         LocalDateTime createdAt,
-          Boolean isFavorite,
-         Boolean isLocked
+        String title,
+        String description,
+        NoteType noteType,
+        LocalDateTime createdAt,
+        Boolean isFavorite,
+        Boolean isLocked
 
-){
+) {
 }

@@ -6,15 +6,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record NoteDetails(
-         UUID id,
+        UUID id,
 
-         String title,
-         String description,
-         NoteType noteType,
-         LocalDateTime createdAt,
-         Boolean isLocked,
-         Boolean isFavorite
-
+        String title,
+        String description,
+        NoteType noteType,
+        LocalDateTime createdAt,
+        Boolean isLocked,
+        Boolean isFavorite
 
 
 ) {

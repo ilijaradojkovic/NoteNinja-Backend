@@ -7,8 +7,9 @@ public class RefreshTokenManager {
 
     @Value("${app.jwtRefreshExpirationMs}")
     private String refreshTOkenDuration;
+
     @Scheduled
-    public void deleteAfterTime(){
+    public void deleteAfterTime() {
 
     }
 }

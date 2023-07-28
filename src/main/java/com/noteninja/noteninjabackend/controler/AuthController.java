@@ -58,6 +58,7 @@ public class AuthController {
 
     @Autowired
     private RoleRepository roleRepository;
+
     @PostMapping("/signup")
     public Response registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.username())) {
@@ -113,6 +114,7 @@ public class AuthController {
 
                 .build();
     }
+
     @PostMapping("/signin")
     public Response authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -134,7 +136,7 @@ public class AuthController {
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.OK)
-                .data(Map.of("jwt",jwt,"refresh_token",refreshToken.getToken(),"user_id",userDetails.getId(),"email", userDetails.getEmail(),"username", userDetails.getUsername(),"roles",roles))
+                .data(Map.of("jwt", jwt, "refresh_token", refreshToken.getToken(), "user_id", userDetails.getId(), "email", userDetails.getEmail(), "username", userDetails.getUsername(), "roles", roles))
                 .build();
 
     }

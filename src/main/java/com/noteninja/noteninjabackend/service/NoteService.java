@@ -21,9 +21,10 @@ public interface NoteService {
     void deleteNote(UUID id);
 
     void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException;
+
     NoteDetails getNoteDetails(UUID id, String password) throws Exception;
 
     Long getNotesCount(String search, FilterNoteType noteType, Long id);
 
-    void toggleToFavorites(UUID uuid, Long id,boolean favorite) throws NoteNotFoundException;
+    void toggleToFavorites(UUID uuid, Long id, boolean favorite) throws NoteNotFoundException;
 }

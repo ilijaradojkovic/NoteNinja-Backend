@@ -20,17 +20,16 @@ import java.util.UUID;
 )
 public interface NoteMapper {
 
-    @Mapping(target = "id",expression = "java(UUID.randomUUID())")
-    @Mapping(target = "createdAt",expression = "java(LocalDateTime.now())")
-    @Mapping(target = "user",source = "user")
-    @Mapping(target = "password",source = "saveNoteRequest.password")
-    @Mapping(target = "isFavorite",expression = "java(false)")
+    @Mapping(target = "id", expression = "java(UUID.randomUUID())")
+    @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "password", source = "saveNoteRequest.password")
+    @Mapping(target = "isFavorite", expression = "java(false)")
     Note fromSaveNoteRequestToNote(SaveNoteRequest saveNoteRequest, User user);
 
     SavedNoteResponse fromNoteToSavedNoteResponse(Note note);
 
     Iterable<NoteCardResponse> fromListNotesTo_ListNoteCardResponse(Iterable<Note> notesFound);
-
 
 
     NoteCardResponse fromNoteToNoteCardResponse(Note note);

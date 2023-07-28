@@ -18,15 +18,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfiguration {
 
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
+
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
-                .csrf(c->c.disable())
-                .authorizeHttpRequests(customizer->
+                .csrf(c -> c.disable())
+                .authorizeHttpRequests(customizer ->
                         customizer
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/notes","/notes/**").authenticated()
+                                .requestMatchers("/notes", "/notes/**").authenticated()
 
                 );
 
@@ -39,19 +42,16 @@ public class SecurityConfiguration {
 
     }
 
-
-
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

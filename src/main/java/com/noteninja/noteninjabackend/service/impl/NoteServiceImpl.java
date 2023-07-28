@@ -44,37 +44,37 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public SavedNoteResponse saveNote(SaveNoteRequest saveNoteRequest, Long id) {
-        log.info("Saving note "+ saveNoteRequest +" for user "+id);
-         User user=  userRepository.findById(id).orElseThrow(()->new UserNotFoundException("User with id "+id +" not found"));
+        log.info("Saving note " + saveNoteRequest + " for user " + id);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
 
-        Note note = noteMapper.fromSaveNoteRequestToNote(saveNoteRequest,user);
+        Note note = noteMapper.fromSaveNoteRequestToNote(saveNoteRequest, user);
         noteRepository.save(note);
         return noteMapper.fromNoteToSavedNoteResponse(note);
     }
 
     @Override
-    public Iterable<NoteCardResponse> getNotes(int page, String search, FilterNoteType noteType, int pageSize,Long id) {
-        log.info("Fetching notes for page:"+ page+" for search:"+ search + " for note_type:"+noteType + " for user "+ id);
+    public Iterable<NoteCardResponse> getNotes(int page, String search, FilterNoteType noteType, int pageSize, Long id) {
+        log.info("Fetching notes for page:" + page + " for search:" + search + " for note_type:" + noteType + " for user " + id);
         Iterable<Note> notesFound;
         //tip: you should not extract whole user with his password here
 //        User user=  userRepository.findByEmail(email).orElseThrow(()->new UserNotFoundException("User with email "+email +" not found"));
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        QNote qNote=QNote.note;
-        if(search!=null){
+        QNote qNote = QNote.note;
+        if (search != null) {
             BooleanExpression contains = qNote.title.contains(search);
             booleanBuilder.and(contains);
         }
-        if(noteType!=FilterNoteType.ALL && noteType!=FilterNoteType.FAVORITES){
+        if (noteType != FilterNoteType.ALL && noteType != FilterNoteType.FAVORITES) {
             BooleanExpression eq = qNote.noteType.eq(NoteType.valueOf(noteType.name()));
             booleanBuilder.and(eq);
         }
-        if(noteType==FilterNoteType.FAVORITES){
-            BooleanExpression eq=qNote.isFavorite.eq(true);
+        if (noteType == FilterNoteType.FAVORITES) {
+            BooleanExpression eq = qNote.isFavorite.eq(true);
             booleanBuilder.and(eq);
         }
         booleanBuilder.and(qNote.user.id.eq(id));
 
-        notesFound=noteRepository.findAll(booleanBuilder, PageRequest.of(page,pageSize));
+        notesFound = noteRepository.findAll(booleanBuilder, PageRequest.of(page, pageSize));
 
         return noteMapper.fromListNotesTo_ListNoteCardResponse(notesFound);
     }
@@ -86,18 +86,18 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    @CachePut(cacheNames = "updateNote",key = "${id}")
+    @CachePut(cacheNames = "updateNote", key = "${id}")
     public void updateNote(UpdateNoteRequest updateNoteRequest, UUID id) throws NoteNotFoundException {
-        log.info("Updating note "+ id +"values: "+updateNoteRequest);
-        Note note = noteRepository.findById(id).orElseThrow(()-> new NoteNotFoundException(id));
-        if(updateNoteRequest.noteType()!=null)
+        log.info("Updating note " + id + "values: " + updateNoteRequest);
+        Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+        if (updateNoteRequest.noteType() != null)
             note.setNoteType(updateNoteRequest.noteType());
-        if(updateNoteRequest.description()!=null)
+        if (updateNoteRequest.description() != null)
             note.setDescription(updateNoteRequest.description());
-        if(updateNoteRequest.title()!=null)
+        if (updateNoteRequest.title() != null)
             note.setTitle(updateNoteRequest.title());
 
-        if(updateNoteRequest.isLocked()!=null ){
+        if (updateNoteRequest.isLocked() != null) {
             note.setIsLocked(updateNoteRequest.isLocked());
 
             note.setPassword(updateNoteRequest.password());
@@ -107,17 +107,17 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    @Cacheable(key = "${id}",cacheNames = "getNoteDetails")
+    @Cacheable(key = "${id}", cacheNames = "getNoteDetails")
     public NoteDetails getNoteDetails(UUID id, String notePassword) throws Exception {
-        log.info("Fetching note details "+ id);
+        log.info("Fetching note details " + id);
         Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
-        if(notePassword!=null && note.getIsLocked()){
+        if (notePassword != null && note.getIsLocked()) {
 //            String decodedPasswor = keysUtil.decode(notePassword.password());
 
-            if(note.getPassword().equals(notePassword)){
+            if (note.getPassword().equals(notePassword)) {
                 return noteMapper.fromNoteToNoteDetails(note);
-            }else{
-                throw new WrontPasswordForNoteException("Password is not correct for note "+ id);
+            } else {
+                throw new WrontPasswordForNoteException("Password is not correct for note " + id);
             }
 
         }
@@ -129,19 +129,19 @@ public class NoteServiceImpl implements NoteService {
     //kesiraj ovopo user idu
     @Override
     public Long getNotesCount(String search, FilterNoteType noteType, Long id) {
-        log.info("Fetch notes count "+ search +" "+ noteType);
+        log.info("Fetch notes count " + search + " " + noteType);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        QNote qNote=QNote.note;
-        if(search!=null){
+        QNote qNote = QNote.note;
+        if (search != null) {
             BooleanExpression contains = qNote.title.contains(search);
             booleanBuilder.and(contains);
         }
-        if(noteType!= FilterNoteType.ALL && noteType!=FilterNoteType.FAVORITES){
+        if (noteType != FilterNoteType.ALL && noteType != FilterNoteType.FAVORITES) {
             BooleanExpression eq = qNote.noteType.eq(NoteType.valueOf(noteType.name()));
             booleanBuilder.and(eq);
         }
-        if(noteType==FilterNoteType.FAVORITES){
-            BooleanExpression eq=qNote.isFavorite.eq(true);
+        if (noteType == FilterNoteType.FAVORITES) {
+            BooleanExpression eq = qNote.isFavorite.eq(true);
             booleanBuilder.and(eq);
         }
         booleanBuilder.and(qNote.user.id.eq(id));
@@ -149,8 +149,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void toggleToFavorites(UUID noteId, Long userId,boolean favorite) throws NoteNotFoundException {
-        Note note = noteRepository.findByIdAndUser_id(noteId, userId).orElseThrow(()->new NoteNotFoundException(noteId));
+    public void toggleToFavorites(UUID noteId, Long userId, boolean favorite) throws NoteNotFoundException {
+        Note note = noteRepository.findByIdAndUser_id(noteId, userId).orElseThrow(() -> new NoteNotFoundException(noteId));
         note.setIsFavorite(favorite);
         noteRepository.save(note);
 

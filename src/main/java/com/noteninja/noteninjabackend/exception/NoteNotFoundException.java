@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class NoteNotFoundException extends Exception{
+public class NoteNotFoundException extends Exception {
 
     private UUID id;
 

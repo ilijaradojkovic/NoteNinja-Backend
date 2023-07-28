@@ -1,9 +1,5 @@
 package com.noteninja.noteninjabackend;
 
-import com.noteninja.noteninjabackend.model.ERole;
-import com.noteninja.noteninjabackend.model.entity.Role;
-import com.noteninja.noteninjabackend.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +18,7 @@ public class NoteNinjaBackendApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        try{
+        try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(2048);
 
